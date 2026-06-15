@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>10 元 GitHub README 快速体检</title>
+  <meta name="description" content="10 元帮你快速检查 GitHub 主页或项目 README，给出能直接修改的建议。">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18202f;
+      --muted: #647082;
+      --line: #d9e1ea;
+      --paper: #fbfcf7;
+      --surface: #ffffff;
+      --green: #1f8a5b;
+      --blue: #2563eb;
+      --coral: #e25544;
+      --gold: #d79b2f;
+      --shadow: 0 18px 50px rgba(24, 32, 47, .12);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% 18%, rgba(37, 99, 235, .12), transparent 28%),
+        radial-gradient(circle at 86% 8%, rgba(31, 138, 91, .14), transparent 24%),
+        linear-gradient(180deg, #f6f9ff 0%, var(--paper) 52%, #fff7ef 100%);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      min-height: 88vh;
+      display: grid;
+      align-items: center;
+      padding: 28px 0 48px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 54px;
+      font-size: 14px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+    }
+
+    .mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--green), var(--blue));
+      box-shadow: 0 10px 26px rgba(37, 99, 235, .22);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      color: var(--muted);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(330px, .98fr);
+      gap: 56px;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(42px, 6vw, 74px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 24px 0 0;
+      max-width: 640px;
+      color: #3a4657;
+      font-size: clamp(18px, 2vw, 22px);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .button.primary {
+      color: white;
+      background: var(--ink);
+      box-shadow: 0 14px 34px rgba(24, 32, 47, .18);
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, .72);
+      border-color: var(--line);
+    }
+
+    .price-line {
+      margin-top: 22px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .price {
+      color: var(--coral);
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .preview {
+      background: #111827;
+      color: #e5eef9;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .14);
+      transform: rotate(1deg);
+    }
+
+    .window {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      background: #0b1220;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+
+    .dot:nth-child(2) {
+      background: var(--gold);
+    }
+
+    .dot:nth-child(3) {
+      background: var(--green);
+    }
+
+    .mock {
+      padding: 28px;
+    }
+
+    .repo-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+      font-weight: 800;
+    }
+
+    .badge {
+      color: #0b1220;
+      background: #b7f7d5;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .readme-line {
+      height: 13px;
+      border-radius: 999px;
+      background: #2f3b4f;
+      margin: 13px 0;
+    }
+
+    .readme-line.short {
+      width: 58%;
+    }
+
+    .readme-line.good {
+      background: linear-gradient(90deg, #34d399, #93c5fd);
+    }
+
+    .score {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .score div {
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .08);
+      font-size: 13px;
+      color: #c9d6e7;
+    }
+
+    .score strong {
+      display: block;
+      color: #ffffff;
+      font-size: 22px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    section {
+      padding: 58px 0;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .section-lead {
+      max-width: 680px;
+      margin: 0 0 30px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .audit-tool {
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(320px, .75fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .check-panel,
+    .result-panel {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .84);
+      border-radius: 8px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(24, 32, 47, .07);
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      font-weight: 800;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 13px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+    }
+
+    .checks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 20px;
+    }
+
+    .check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      min-height: 54px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .check input {
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+      accent-color: var(--green);
+      flex: 0 0 auto;
+    }
+
+    .result-panel {
+      display: grid;
+      align-content: center;
+      gap: 16px;
+      color: white;
+      background:
+        linear-gradient(135deg, rgba(31, 138, 91, .95), rgba(37, 99, 235, .92)),
+        var(--ink);
+      border-color: rgba(255, 255, 255, .22);
+    }
+
+    .meter {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .24);
+    }
+
+    .meter span {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: #fff;
+      transition: width .2s ease;
+    }
+
+    .audit-score {
+      font-size: 54px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .result-panel p {
+      margin: 0;
+      color: #eaf3ff;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .78);
+      border-radius: 8px;
+      padding: 22px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+    }
+
+    .card ul {
+      padding-left: 20px;
+      margin: 14px 0 0;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      padding: 22px;
+      border-left: 4px solid var(--green);
+      background: var(--surface);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(24, 32, 47, .07);
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 14px;
+      border-radius: 50%;
+      color: white;
+      background: var(--green);
+      font-weight: 800;
+    }
+
+    .order {
+      display: grid;
+      grid-template-columns: 1fr minmax(280px, 360px);
+      gap: 28px;
+      align-items: stretch;
+      background: var(--ink);
+      color: white;
+      border-radius: 8px;
+      padding: 34px;
+      box-shadow: var(--shadow);
+      overflow-wrap: anywhere;
+    }
+
+    .hero > *,
+    .order > *,
+    .paybox,
+    .qr {
+      min-width: 0;
+    }
+
+    .order p {
+      color: #c8d2df;
+    }
+
+    .paybox {
+      display: grid;
+      align-content: center;
+      gap: 14px;
+      padding: 22px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .14);
+    }
+
+    .qr {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 22px;
+      color: #18202f;
+      background:
+        linear-gradient(90deg, #111827 10px, transparent 10px) 0 0 / 34px 34px,
+        linear-gradient(#111827 10px, transparent 10px) 0 0 / 34px 34px,
+        #fff;
+      border-radius: 8px;
+      font-weight: 900;
+    }
+
+    footer {
+      padding: 34px 0 46px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      header {
+        min-height: auto;
+      }
+
+      .hero,
+      .order {
+        grid-template-columns: 1fr;
+      }
+
+      .order {
+        padding: 24px;
+      }
+
+      .preview {
+        transform: none;
+      }
+
+      .grid,
+      .steps,
+      .audit-tool {
+        grid-template-columns: 1fr;
+      }
+
+      .checks {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav>
+        <div class="brand"><span class="mark">GH</span> README 快速体检</div>
+        <div class="nav-links">
+          <a href="#audit">免费自测</a>
+          <a href="#deliver">交付内容</a>
+          <a href="#process">流程</a>
+          <a href="#order">下单</a>
+        </div>
+      </nav>
+
+      <div class="hero">
+        <div>
+          <h1>10 元，让你的 GitHub 主页更像一个靠谱作品集</h1>
+          <p class="lead">把你的 GitHub 主页或项目 README 发来，我会帮你找出最影响第一印象的问题，并给你一版能直接复制的优化开头。</p>
+          <div class="actions">
+            <a class="button primary" href="#order">现在下单 10 元</a>
+            <a class="button secondary" href="#deliver">看看交付什么</a>
+          </div>
+          <div class="price-line"><span class="price">10 元</span><span>适合学生、求职者、独立开发者和开源项目作者</span></div>
+        </div>
+
+        <div class="preview" aria-label="GitHub README 优化预览">
+          <div class="window"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="mock">
+            <div class="repo-title"><span>your-name / profile</span><span class="badge">After</span></div>
+            <div class="readme-line good"></div>
+            <div class="readme-line"></div>
+            <div class="readme-line short"></div>
+            <div class="readme-line"></div>
+            <div class="readme-line good short"></div>
+            <div class="score">
+              <div><strong>3</strong>关键问题</div>
+              <div><strong>1</strong>改写开头</div>
+              <div><strong>24h</strong>内交付</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="audit">
+      <div class="wrap">
+        <h2>先免费测一下你的 README</h2>
+        <p class="section-lead">勾选已经做到的项目，30 秒看出你的 GitHub 第一印象缺什么。这个自测不会上传任何数据。</p>
+        <div class="audit-tool">
+          <div class="check-panel">
+            <div class="field">
+              <label for="github-url">GitHub 链接</label>
+              <input id="github-url" type="url" placeholder="https://github.com/your-name/your-project">
+            </div>
+            <div class="checks" id="audit-checks">
+              <label class="check"><input type="checkbox" value="15">项目名能看懂具体用途</label>
+              <label class="check"><input type="checkbox" value="15">第一段写清楚解决什么问题</label>
+              <label class="check"><input type="checkbox" value="12">有截图、演示或运行结果</label>
+              <label class="check"><input type="checkbox" value="12">有安装和运行步骤</label>
+              <label class="check"><input type="checkbox" value="10">写清楚技术栈和亮点</label>
+              <label class="check"><input type="checkbox" value="10">最重要项目放在最前面</label>
+              <label class="check"><input type="checkbox" value="8">有联系方式或下一步动作</label>
+              <label class="check"><input type="checkbox" value="8">删除了空仓库和明显半成品</label>
+              <label class="check"><input type="checkbox" value="5">有许可证或贡献说明</label>
+              <label class="check"><input type="checkbox" value="5">移动端阅读也舒服</label>
+            </div>
+            <a class="button primary" href="#order">让真人帮我看 10 元</a>
+          </div>
+          <div class="result-panel" aria-live="polite">
+            <div class="audit-score"><span id="audit-score">0</span> 分</div>
+            <div class="meter"><span id="audit-meter"></span></div>
+            <p id="audit-message">先勾选左边项目，看看你的 GitHub 第一屏是否容易让人继续看。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deliver">
+      <div class="wrap">
+        <h2>你会收到什么</h2>
+        <p class="section-lead">不是泛泛夸奖，也不是长篇废话。每一单都交付能立刻修改的建议。</p>
+        <div class="grid">
+          <article class="card">
+            <h3>第一印象诊断</h3>
+            <p>指出访问者打开页面后最先注意到的问题，包括标题、定位、项目排序、说明清晰度。</p>
+          </article>
+          <article class="card">
+            <h3>README 开头改写</h3>
+            <p>给你一版 80 到 150 字的开头文案，可以直接复制到 GitHub。</p>
+          </article>
+          <article class="card">
+            <h3>下一步建议</h3>
+            <p>告诉你最该先改哪一处，让页面更适合求职、接单、展示作品或做开源。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="wrap">
+        <h2>下单流程</h2>
+        <div class="steps">
+          <div class="step">付款 10 元，并备注你的 GitHub 链接。</div>
+          <div class="step">我检查你的个人主页或一个项目 README。</div>
+          <div class="step">24 小时内返回一份简短诊断。</div>
+          <div class="step">你按建议改完，可以免费追问 1 次。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="order">
+      <div class="wrap">
+        <div class="order">
+          <div>
+            <h2>现在下单</h2>
+            <p>付款后把 GitHub 链接发到微信或邮箱。适合先试一次，如果觉得有用，再升级做完整作品集整理。</p>
+            <p><strong>微信：</strong>你的微信号</p>
+            <p><strong>邮箱：</strong>你的邮箱</p>
+            <p><strong>仓库：</strong><a href="https://github.com/your-name/github-readme-check">github.com/your-name/github-readme-check</a></p>
+          </div>
+          <div class="paybox">
+            <div class="qr">这里换成你的收款二维码说明</div>
+            <p>备注格式：GitHub 体检 + 你的 GitHub 链接</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">© 2026 README 快速体检。10 元体验价，名额和交付时间以页面说明为准。</div>
+  </footer>
+  <script>
+    const auditChecks = document.querySelectorAll('#audit-checks input');
+    const scoreEl = document.querySelector('#audit-score');
+    const meterEl = document.querySelector('#audit-meter');
+    const messageEl = document.querySelector('#audit-message');
+
+    function updateAudit() {
+      const score = Array.from(auditChecks).reduce((sum, item) => {
+        return sum + (item.checked ? Number(item.value) : 0);
+      }, 0);
+
+      scoreEl.textContent = score;
+      meterEl.style.width = `${score}%`;
+
+      if (score < 45) {
+        messageEl.textContent = '第一印象还有明显缺口，建议先改 README 开头、截图和运行方式。10 元体检能最快帮你抓重点。';
+      } else if (score < 75) {
+        messageEl.textContent = '基础信息已经有了，但表达还可以更像作品集。适合做一次快速体检，把页面改得更利落。';
+      } else {
+        messageEl.textContent = '完成度不错。接下来可以优化项目排序、求职表达和亮点包装，让页面更容易被记住。';
+      }
+    }
+
+    auditChecks.forEach((item) => item.addEventListener('change', updateAudit));
+    updateAudit();
+  </script>
+</body>
+</html>

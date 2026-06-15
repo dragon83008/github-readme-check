@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>README 体检交付生成器</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d8e0ea;
+      --paper: #f7faf7;
+      --surface: #ffffff;
+      --green: #1f8a5b;
+      --blue: #2563eb;
+      --coral: #df5948;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef5ff 0%, var(--paper) 58%, #fff8ef 100%);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 48px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .pill {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 8px 13px;
+      color: white;
+      background: var(--ink);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(340px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .88);
+      box-shadow: 0 14px 34px rgba(23, 32, 51, .08);
+      padding: 22px;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    label,
+    legend {
+      font-weight: 800;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    fieldset {
+      border: 0;
+      padding: 0;
+      margin: 18px 0 0;
+    }
+
+    .checks {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: #344054;
+      cursor: pointer;
+    }
+
+    .check input {
+      width: 18px;
+      min-height: 18px;
+      height: 18px;
+      margin: 3px 0 0;
+      accent-color: var(--green);
+      flex: 0 0 auto;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      min-height: 44px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 0 15px;
+      color: white;
+      background: var(--ink);
+      font: inherit;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      color: var(--ink);
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .preview {
+      position: sticky;
+      top: 16px;
+    }
+
+    .output {
+      width: 100%;
+      min-height: 620px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .status {
+      min-height: 24px;
+      margin-top: 10px;
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 8px 0 0;
+    }
+
+    @media (max-width: 900px) {
+      header,
+      main {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      header {
+        display: block;
+      }
+
+      .pill {
+        display: inline-flex;
+        margin-top: 16px;
+      }
+
+      .preview {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>README 体检交付生成器</h1>
+        <p class="lead">收款后打开这个页面，填入客户链接、目标和问题点，就能生成一份可直接发给客户的 10 元体检报告。</p>
+      </div>
+      <div class="pill">本地使用，不上传数据</div>
+    </header>
+
+    <main>
+      <section>
+        <h2>客户信息</h2>
+        <div class="field">
+          <label for="customer">客户称呼</label>
+          <input id="customer" value="同学">
+        </div>
+        <div class="field">
+          <label for="url">GitHub 链接</label>
+          <input id="url" placeholder="https://github.com/your-name/your-project">
+        </div>
+        <div class="field">
+          <label for="goal">优化目标</label>
+          <select id="goal">
+            <option>求职 / 实习作品集</option>
+            <option>接单展示</option>
+            <option>开源项目说明</option>
+            <option>课程 / 毕设项目</option>
+            <option>暂时不确定</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="project">一句话项目判断</label>
+          <textarea id="project">这个项目已经有基础内容，但 README 第一屏还没有马上说清楚它解决什么问题、适合谁看、为什么值得继续往下读。</textarea>
+        </div>
+
+        <fieldset>
+          <legend>勾选最需要先改的问题</legend>
+          <div class="checks" id="issues">
+            <label class="check"><input type="checkbox" value="标题还不够具体。建议用“功能 + 使用场景”的方式命名，让别人不用点进代码也能看懂项目价值。">标题不够具体</label>
+            <label class="check"><input type="checkbox" value="README 第一段没有先讲结果。建议第一句话直接写清楚：这个项目帮谁完成什么事。">第一段没讲结果</label>
+            <label class="check"><input type="checkbox" value="缺少截图、演示链接或运行结果。建议放一张最能说明功能的截图，降低访问者理解成本。">缺少截图或演示</label>
+            <label class="check"><input type="checkbox" value="运行步骤不够清楚。建议补上安装、启动、访问地址和常见问题，最好能让别人 3 分钟跑起来。">运行步骤不清楚</label>
+            <label class="check"><input type="checkbox" value="技术栈写得偏散。建议把核心技术、你负责的部分、解决过的难点分开写。">技术栈和亮点偏散</label>
+            <label class="check"><input type="checkbox" value="项目排序还可以优化。建议把最完整、最像真实产品、最能代表能力的项目放在最前面。">项目排序需要调整</label>
+            <label class="check"><input type="checkbox" value="联系方式或下一步动作不明显。建议在 README 顶部或结尾放一个清楚的联系入口。">缺少下一步动作</label>
+          </div>
+        </fieldset>
+
+        <div class="field" style="margin-top:18px">
+          <label for="custom">额外建议</label>
+          <textarea id="custom" placeholder="可选：写一条你观察到的具体问题。"></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="generate" type="button">生成交付文本</button>
+          <button id="copy" class="secondary" type="button">复制文本</button>
+        </div>
+        <p class="hint">建议每单选择 3 到 5 个问题。10 元交付要短、准、能改。</p>
+      </section>
+
+      <section class="preview">
+        <h2>交付预览</h2>
+        <textarea id="output" class="output" readonly></textarea>
+        <div id="status" class="status"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const fields = {
+      customer: document.querySelector('#customer'),
+      url: document.querySelector('#url'),
+      goal: document.querySelector('#goal'),
+      project: document.querySelector('#project'),
+      custom: document.querySelector('#custom'),
+      output: document.querySelector('#output'),
+      status: document.querySelector('#status'),
+    };
+
+    const issueInputs = Array.from(document.querySelectorAll('#issues input'));
+
+    function today() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    function selectedIssues() {
+      return issueInputs
+        .filter((item) => item.checked)
+        .map((item) => item.value);
+    }
+
+    function opening(goal) {
+      if (goal.includes('求职')) return '建议优先让招聘者在 5 秒内看懂：你做了什么、项目完成度如何、你承担了哪些关键工作。';
+      if (goal.includes('接单')) return '建议优先让潜在客户看懂：你能交付什么、效果长什么样、下一步如何联系你。';
+      if (goal.includes('开源')) return '建议优先让新用户看懂：这个项目解决什么问题、怎么安装、怎么参与贡献。';
+      if (goal.includes('课程')) return '建议优先让老师或同学看懂：项目功能、实现方式、运行步骤和你的思考。';
+      return '建议优先把 README 第一屏整理清楚，让访问者不用猜也能继续看下去。';
+    }
+
+    function buildReport() {
+      const name = fields.customer.value.trim() || '同学';
+      const url = fields.url.value.trim() || '未提供链接';
+      const issues = selectedIssues();
+      const custom = fields.custom.value.trim();
+      const issueList = [...issues, custom].filter(Boolean);
+      const topIssues = issueList.length ? issueList : [
+        'README 顶部信息还可以更明确。建议先补齐标题、一句话介绍、截图和运行方式。',
+        '项目亮点需要更集中。建议把最能证明能力的部分放到 README 前半段。',
+        '下一步动作不够明显。建议补充联系方式、演示链接或 issue 入口。',
+      ];
+
+      const readableIssues = topIssues.map((text, index) => `${index + 1}. ${text}`).join('\n\n');
+
+      const starter = `你好，我是 ${name}。这个项目面向 ${fields.goal.value} 场景，当前已经有基础内容。建议 README 第一屏先写清楚：项目解决什么问题、核心功能是什么、为什么值得继续看。这里最推荐先补一张截图或演示链接，再把安装运行步骤放到前面。`;
+
+      fields.output.value = `# GitHub README 快速体检
+
+客户：${name}
+链接：${url}
+日期：${today()}
+目标：${fields.goal.value}
+
+## 总体判断
+
+${fields.project.value.trim()}
+
+${opening(fields.goal.value)}
+
+## 最需要先改的 ${topIssues.length} 个地方
+
+${readableIssues}
+
+## 可直接复制的 README 开头
+
+${starter}
+
+## 今天就改
+
+先改 README 顶部 5 行：标题、一句话介绍、截图或演示链接、技术栈、运行方式。这个区域决定别人会不会继续往下看。
+
+## 可追问 1 次
+
+你改完后可以把新链接发我，我再帮你看一眼最上面的展示效果。`;
+      fields.status.textContent = '已生成';
+    }
+
+    async function copyReport() {
+      buildReport();
+      fields.output.select();
+      document.execCommand('copy');
+      fields.status.textContent = '已复制，可以直接发给客户';
+    }
+
+    document.querySelector('#generate').addEventListener('click', buildReport);
+    document.querySelector('#copy').addEventListener('click', copyReport);
+    [...Object.values(fields), ...issueInputs].forEach((item) => {
+      if (item && item !== fields.output && item !== fields.status) {
+        item.addEventListener('input', buildReport);
+        item.addEventListener('change', buildReport);
+      }
+    });
+    buildReport();
+  </script>
+</body>
+</html>

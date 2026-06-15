@@ -1,0 +1,2 @@
+date,customer,github_url,paid_amount,status,delivery_link,next_step
+2026-06-15,示例客户,https://github.com/example,10,待交付,,24小时内交付README体检
